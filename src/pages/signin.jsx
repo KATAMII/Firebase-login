@@ -1,6 +1,6 @@
 import React from 'react';
 import './signin.css';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { FacebookAuthProvider, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth } from '../components/firebase';
 import { toast } from 'react-toastify';
 
@@ -14,10 +14,30 @@ const Signin = ({ setUser }) => {
           toast.success("User logged in successfully", {
             position: "center",
           });
-          setUser(result.user); // Update user state in the App component
+          setUser(result.user); 
         }
       })
       .catch((error) => {
+        toast.error("Login failed: " + error.message, {
+          position: "center",
+        });
+      });
+  };
+
+  const facebooklogin=async ()=>{
+    const provider = new FacebookAuthProvider();
+    signInWithPopup(auth, provider)
+      .then(async (result) => {
+        console.log(result);
+        if (result.user) {
+          toast.success("User logged in successfully", {
+            position: "center",
+          });
+          setUser(result.user); 
+        }
+      })
+      .catch((error) => {
+        console.error("Facebook login error:", error);
         toast.error("Login failed: " + error.message, {
           position: "center",
         });
@@ -41,7 +61,7 @@ const Signin = ({ setUser }) => {
       <div className="social-login">
         <p>or continue with</p>
         <button className="social-button google-button" onClick={googleLogin}>Google</button>
-        <button className="social-button facebook-button">Facebook</button>
+        <button className="social-button facebook-button"onClick={facebooklogin}>Facebook</button>
       </div>
     </div>
   );
